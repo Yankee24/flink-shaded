@@ -25,13 +25,12 @@ under the License.
     <parent>
         <groupId>org.apache.flink</groupId>
         <artifactId>flink-shaded</artifactId>
-        <version>16.0</version>
-        <relativePath>..</relativePath>
+        <version>20.0</version>
     </parent>
 
-    <artifactId>flink-shaded-netty</artifactId>
+    <artifactId>flink-shaded-netty${flink.ci.license.suffix}</artifactId>
     <name>flink-shaded-netty-4</name>
-    <version>${netty.version}-16.0</version>
+    <version>${netty.version}-20.0</version>
 
     <dependencies>
         <dependency>
@@ -40,6 +39,15 @@ under the License.
             <version>${netty.version}</version>
         </dependency>
     </dependencies>
+
+    <profiles>
+        <profile>
+            <id>license-check</id>
+            <properties>
+                <flink.ci.license.suffix>-4</flink.ci.license.suffix>
+            </properties>
+        </profile>
+    </profiles>
 
     <build>
         <plugins>
@@ -83,15 +91,10 @@ under the License.
                             <target>
                                 <echo message="unpacking netty jar" />
                                 <unzip src="${project.build.directory}/${artifactId}-${version}.jar" dest="${project.build.directory}/unpacked/" />
-                                <echo message="renaming native epoll library" />
+                                <echo message="renaming the complete libnetty library" />
                                 <move todir="${project.build.directory}/unpacked/META-INF/native" includeemptydirs="false">
                                     <fileset dir="${project.build.directory}/unpacked/META-INF/native"/>
-                                    <mapper type="glob" from="libnetty_transport_native_epoll_x86_64.so" to="liborg_apache_flink_shaded_netty4_netty_transport_native_epoll_x86_64.so"/>
-                                </move>
-                                <echo message="renaming native kqueue library" />
-                                <move todir="${project.build.directory}/unpacked/META-INF/native" includeemptydirs="false">
-                                    <fileset dir="${project.build.directory}/unpacked/META-INF/native"/>
-                                    <mapper type="glob" from="libnetty_transport_native_kqueue_x86_64.jnilib" to="liborg_apache_flink_shaded_netty4_netty_transport_native_kqueue_x86_64.jnilib"/>
+                                    <mapper type="glob" from="libnetty*" to="liborg_apache_flink_shaded_netty4_netty*"/>
                                 </move>
                                 <echo message="repackaging netty jar" />
                                 <jar destfile="${project.build.directory}/${artifactId}-${version}.jar" basedir="${project.build.directory}/unpacked" />

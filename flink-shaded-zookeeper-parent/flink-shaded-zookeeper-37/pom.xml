@@ -29,11 +29,11 @@ under the License.
     </parent>
 
     <artifactId>flink-shaded-zookeeper-3${flink.ci.license.suffix}</artifactId>
-    <name>flink-shaded-zookeeper-3.6</name>
+    <name>flink-shaded-zookeeper-3.7</name>
     <version>${zookeeper.version}-20.0</version>
 
     <properties>
-        <zookeeper.version>3.6.4</zookeeper.version>
+        <zookeeper.version>3.7.2</zookeeper.version>
         <curator.version>5.4.0</curator.version>
     </properties>
 
@@ -42,11 +42,6 @@ under the License.
             <groupId>org.apache.zookeeper</groupId>
             <artifactId>zookeeper</artifactId>
             <exclusions>
-                <exclusion>
-                    <!-- Flink distribution provides logging classes -->
-                    <groupId>log4j</groupId>
-                    <artifactId>log4j</artifactId>
-                </exclusion>
                 <exclusion>
                     <!-- not relevant at runtime -->
                     <groupId>org.apache.yetus</groupId>
@@ -57,11 +52,6 @@ under the License.
                     <groupId>org.slf4j</groupId>
                     <artifactId>slf4j-api</artifactId>
                 </exclusion>
-                <exclusion>
-                    <!-- Flink distribution provides logging classes -->
-                    <groupId>org.slf4j</groupId>
-                    <artifactId>slf4j-log4j12</artifactId>
-                </exclusion>
             </exclusions>
         </dependency>
         <dependency>
@@ -70,17 +60,12 @@ under the License.
                  has a hard dependency on it for testing purposes.-->
             <groupId>io.dropwizard.metrics</groupId>
             <artifactId>metrics-core</artifactId>
-            <version>3.2.5</version>
+            <version>4.1.12.1</version>
             <exclusions>
                 <exclusion>
                     <!-- Flink distribution provides logging classes -->
                     <groupId>org.slf4j</groupId>
                     <artifactId>slf4j-api</artifactId>
-                </exclusion>
-                <exclusion>
-                    <!-- Flink distribution provides logging classes -->
-                    <groupId>org.slf4j</groupId>
-                    <artifactId>slf4j-log4j12</artifactId>
                 </exclusion>
             </exclusions>
         </dependency>
@@ -160,7 +145,7 @@ under the License.
         <profile>
             <id>license-check</id>
             <properties>
-                <flink.ci.license.suffix>6</flink.ci.license.suffix>
+                <flink.ci.license.suffix>7</flink.ci.license.suffix>
             </properties>
         </profile>
     </profiles>
