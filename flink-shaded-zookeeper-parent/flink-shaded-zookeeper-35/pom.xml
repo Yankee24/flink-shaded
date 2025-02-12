@@ -25,17 +25,16 @@ under the License.
     <parent>
         <groupId>org.apache.flink</groupId>
         <artifactId>flink-shaded-zookeeper-parent</artifactId>
-        <version>16.0</version>
-        <relativePath>..</relativePath>
+        <version>20.0</version>
     </parent>
 
-    <artifactId>flink-shaded-zookeeper-3</artifactId>
+    <artifactId>flink-shaded-zookeeper-3${flink.ci.license.suffix}</artifactId>
     <name>flink-shaded-zookeeper-3.5</name>
-    <version>${zookeeper.version}-16.0</version>
+    <version>${zookeeper.version}-20.0</version>
 
     <properties>
-        <zookeeper.version>3.5.9</zookeeper.version>
-        <curator.version>5.2.0</curator.version>
+        <zookeeper.version>3.5.10</zookeeper.version>
+        <curator.version>5.4.0</curator.version>
     </properties>
 
     <dependencies>
@@ -123,6 +122,21 @@ under the License.
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
+            <!-- For dependency convergence -->
+            <dependency>
+                <groupId>com.google.guava</groupId>
+                <artifactId>guava</artifactId>
+                <version>${guava.version}</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
+
+    <profiles>
+        <profile>
+            <id>license-check</id>
+            <properties>
+                <flink.ci.license.suffix>5</flink.ci.license.suffix>
+            </properties>
+        </profile>
+    </profiles>
 </project>

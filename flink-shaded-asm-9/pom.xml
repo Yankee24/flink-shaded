@@ -25,18 +25,17 @@ under the License.
     <parent>
         <groupId>org.apache.flink</groupId>
         <artifactId>flink-shaded</artifactId>
-        <version>16.0</version>
-        <relativePath>..</relativePath>
+        <version>20.0</version>
     </parent>
 
     <artifactId>flink-shaded-asm-${asm.major.version}</artifactId>
-    <version>${asm.version}-16.0</version>
+    <version>${asm.version}-20.0</version>
 
     <packaging>jar</packaging>
 
     <properties>
         <asm.major.version>9</asm.major.version>
-        <asm.version>${asm.major.version}.2</asm.version>
+        <asm.version>${asm.major.version}.6</asm.version>
     </properties>
 
     <dependencies>
@@ -70,8 +69,6 @@ under the License.
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-shade-plugin</artifactId>
-                <!-- asm6+ uses java9 modularization which cannot be processed with 3.0.0 -->
-                <version>3.1.1</version>
                 <executions>
                     <execution>
                         <id>shade-flink</id>

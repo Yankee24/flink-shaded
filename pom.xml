@@ -30,7 +30,7 @@ under the License.
 
     <groupId>org.apache.flink</groupId>
     <artifactId>flink-shaded</artifactId>
-    <version>16.0</version>
+    <version>20.0</version>
 
     <name>flink-shaded</name>
     <packaging>pom</packaging>
@@ -51,15 +51,32 @@ under the License.
         <developerConnection>scm:git:https://github.com/apache/flink-shaded.git</developerConnection>
     </scm>
 
+    <pluginRepositories>
+        <pluginRepository>
+            <!-- Allows exec-maven-plugin to resolve snapshot plugin dependencies -->
+            <id>apache.snapshots.https</id>
+            <name>${distMgmtSnapshotsName}</name>
+            <url>${distMgmtSnapshotsUrl}</url>
+        </pluginRepository>
+    </pluginRepositories>
+
     <properties>
         <shading.prefix>org.apache.flink.shaded</shading.prefix>
-        <netty.version>4.1.70.Final</netty.version>
+        <netty.version>4.1.100.Final</netty.version>
+        <jackson.version>2.18.2</jackson.version>
+        <jsonpath.version>2.9.0</jsonpath.version>
+        <guava.version>33.4.0-jre</guava.version>
+        <!-- The license check requires the artifactId to match the directory that the module resides in.
+             This is not the case for several modules in flink-shaded for legacy reasons.
+             This property can be used by modules to add a suffix to the artifactId to match the directory name on CI
+             when the 'license-check' profile is active. -->
+        <flink.ci.license.suffix/>
     </properties>
 
     <modules>
         <module>flink-shaded-force-shading</module>
         <module>flink-shaded-asm-9</module>
-        <module>flink-shaded-guava-30</module>
+        <module>flink-shaded-guava-33</module>
         <module>flink-shaded-netty-4</module>
         <module>flink-shaded-netty-tcnative-dynamic</module>
         <module>flink-shaded-jackson-parent</module>
@@ -140,7 +157,7 @@ under the License.
                         <plugin>
                             <groupId>org.apache.maven.plugins</groupId>
                             <artifactId>maven-shade-plugin</artifactId>
-                            <version>3.2.1</version>
+                            <version>3.6.0</version>
                         </plugin>
                     </plugins>
                 </pluginManagement>
@@ -176,7 +193,6 @@ under the License.
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-shade-plugin</artifactId>
-                    <version>3.1.1</version>
                     <configuration>
                         <filters combine.children="append">
                             <filter>
@@ -202,7 +218,7 @@ under the License.
                     <!-- Used to resolve variables in the 'version' tag -->
                     <groupId>org.codehaus.mojo</groupId>
                     <artifactId>flatten-maven-plugin</artifactId>
-                    <version>1.2.1</version>
+                    <version>1.2.7</version>
                     <executions>
                         <execution>
                             <id>flatten</id>
@@ -310,6 +326,37 @@ under the License.
                         <exclude>**/release/**</exclude>
                     </excludes>
                 </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>exec-maven-plugin</artifactId>
+                <version>3.1.0</version>
+                <inherited>false</inherited>
+                <executions>
+                    <execution>
+                        <id>check-license</id>
+                        <!-- manually called -->
+                        <phase>none</phase>
+                        <goals>
+                            <goal>java</goal>
+                        </goals>
+                        <configuration>
+                            <mainClass>org.apache.flink.tools.ci.licensecheck.LicenseChecker</mainClass>
+                        </configuration>
+                    </execution>
+                </executions>
+                <configuration>
+                    <includePluginDependencies>true</includePluginDependencies>
+                    <includeProjectDependencies>false</includeProjectDependencies>
+                </configuration>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.apache.flink</groupId>
+                        <artifactId>flink-ci-tools</artifactId>
+                        <version>1.18.0</version>
+                    </dependency>
+                </dependencies>
             </plugin>
         </plugins>
     </build>

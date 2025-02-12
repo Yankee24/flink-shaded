@@ -25,8 +25,7 @@ under the License.
     <parent>
         <groupId>org.apache.flink</groupId>
         <artifactId>flink-shaded</artifactId>
-        <version>16.0</version>
-        <relativePath>..</relativePath>
+        <version>20.0</version>
     </parent>
 
     <artifactId>flink-shaded-zookeeper-parent</artifactId>
@@ -36,6 +35,8 @@ under the License.
     <modules>
         <module>flink-shaded-zookeeper-35</module>
         <module>flink-shaded-zookeeper-36</module>
+        <module>flink-shaded-zookeeper-37</module>
+        <module>flink-shaded-zookeeper-38</module>
     </modules>
 
     <properties>

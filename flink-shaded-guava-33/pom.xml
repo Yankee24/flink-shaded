@@ -28,23 +28,35 @@ under the License.
         <version>20.0</version>
     </parent>
 
-    <artifactId>flink-shaded-netty-tcnative-static</artifactId>
-    <name>flink-shaded-netty-tcnative-static</name>
-    <version>${netty.tcnative.version}-20.0</version>
+    <artifactId>flink-shaded-guava${flink.ci.license.suffix}</artifactId>
+    <name>flink-shaded-guava-33</name>
+    <version>${guava.version}-20.0</version>
 
-    <properties>
-        <!-- This is based on the "tcnative.version" property in the netty root pom-->
-        <netty.tcnative.version>2.0.62.Final</netty.tcnative.version>
-    </properties>
+    <packaging>jar</packaging>
 
     <dependencies>
-        <!-- Netty's native openSSL support -->
         <dependency>
-            <groupId>io.netty</groupId>
-            <artifactId>netty-tcnative-boringssl-static</artifactId>
-            <version>${netty.tcnative.version}</version>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+            <version>${guava.version}</version>
+            <exclusions>
+                <exclusion>
+                    <!-- this dependency is actually empty and appears to be some weird legacy artifact -->
+                    <groupId>com.google.guava</groupId>
+                    <artifactId>listenablefuture</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
     </dependencies>
+
+    <profiles>
+        <profile>
+            <id>license-check</id>
+            <properties>
+                <flink.ci.license.suffix>-33</flink.ci.license.suffix>
+            </properties>
+        </profile>
+    </profiles>
 
     <build>
         <plugins>
@@ -63,44 +75,16 @@ under the License.
                             <dependencyReducedPomLocation>${project.basedir}/target/dependency-reduced-pom.xml</dependencyReducedPomLocation>
                             <artifactSet>
                                 <includes>
-                                    <include>io.netty:netty-tcnative-classes</include>
-                                    <include>io.netty:netty-tcnative-boringssl-static</include>
+                                    <include>com.google.guava:*</include>
                                 </includes>
                             </artifactSet>
                             <relocations>
                                 <relocation>
-                                    <pattern>io.netty</pattern>
-                                    <shadedPattern>${shading.prefix}.netty4.io.netty</shadedPattern>
+                                    <pattern>com.google</pattern>
+                                    <shadedPattern>${shading.prefix}.guava33.com.google</shadedPattern>
                                 </relocation>
                             </relocations>
                         </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-antrun-plugin</artifactId>
-                <version>1.7</version>
-                <executions>
-                    <execution>
-                        <id>rename-native-library</id>
-                        <phase>package</phase>
-                        <configuration>
-                            <target>
-                                <echo message="unpacking static tcnative netty jar" />
-                                <unzip src="${project.build.directory}/${artifactId}-${version}.jar" dest="${project.build.directory}/unpacked/" />
-                                <echo message="renaming netty_tcnative library" />
-                                <move todir="${project.build.directory}/unpacked/META-INF/native" includeemptydirs="false">
-                                    <fileset dir="${project.build.directory}/unpacked/META-INF/native"/>
-                                    <mapper type="regexp" from="(lib)?netty_tcnative_(.*)" to="\1org_apache_flink_shaded_netty4_netty_tcnative_\2"/>
-                                </move>
-                                <echo message="repackaging netty jar" />
-                                <jar destfile="${project.build.directory}/${artifactId}-${version}.jar" basedir="${project.build.directory}/unpacked" />
-                            </target>
-                        </configuration>
-                        <goals>
-                            <goal>run</goal>
-                        </goals>
                     </execution>
                 </executions>
             </plugin>
